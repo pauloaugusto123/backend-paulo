@@ -36,7 +36,6 @@ function validarTreino(corpo) {
     return null;
 }
 
-
 // ------------------------------------------------------------
 // GET /treinos - lista todos os treinos
 // ------------------------------------------------------------
