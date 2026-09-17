@@ -6,8 +6,7 @@
 ### Voce terminou a aula quando TODAS responderem o status certo.
 ### ============================================================
 
-@url = https://urban-space-giggle-q7vwp575pjjqh465j-3000.app.github.dev/
-
+@url = http://localhost:3000
 
 ### 1 - Listar todos os treinos            -> espera 200 e um array
 GET {{url}}/treinos
