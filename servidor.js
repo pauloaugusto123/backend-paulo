@@ -27,10 +27,10 @@ let proximoId = 1;
 // de erro quando algo esta errado, ou null quando esta tudo certo.
 // ------------------------------------------------------------
 function validarTreino(corpo) {
-    if (typeof corpo.nome !=='string' || corpo.nome.trim() ==='') {
+    if (typeof corpo.nome !== ' string ' || corpo.nome.trim() === '') {
         return 'O campo nome e obrigatorio e deve ser um texto.';
     }
-    if (typeof corpo.duracao !== 'number'|| corpo.duracao <= 0) {
+    if (typeof corpo.duracao !== ' number ' || corpo.duracao <= 0) {
         return 'O campo duracao e obrigatorio e deve ser um numero maior que zero.';
     }
     return null;
@@ -39,7 +39,7 @@ function validarTreino(corpo) {
 // ------------------------------------------------------------
 // GET /treinos - lista todos os treinos
 // ------------------------------------------------------------
-app.get('/treinos', (req, res) => {
+app.get('/treinos ', (req, res) => {
     res.status(200).json(treinos);
 });
 
@@ -47,7 +47,7 @@ app.get('/treinos', (req, res) => {
 // ------------------------------------------------------------
 // GET /treinos/:id - busca um treino pelo id (404 se nao existir)
 // ------------------------------------------------------------
-app.get('/treinos/: id', (req, res) => {
+app.get('/treinos/: id ', (req, res) => {
     const id = Number(req.params.id);
     const treino = treinos.find((t) => t.id === id);
     if (treino === undefined) {
@@ -60,7 +60,7 @@ app.get('/treinos/: id', (req, res) => {
 // ------------------------------------------------------------
 // POST /treinos - cria um treino (400 se os dados forem invalidos)
 // ------------------------------------------------------------
-app.post('/treinos', (req, res) => {
+app.post('/treinos ', (req, res) => {
     const erro = validarTreino(req.body);
     if (erro !== null) {
         return res.status(400).json({ erro: erro });
@@ -79,7 +79,7 @@ app.post('/treinos', (req, res) => {
 // ------------------------------------------------------------
 // PUT /treinos/:id - substitui um treino
 // ------------------------------------------------------------
-app.put('/treinos/:id', (req,res) => {
+app.put('/treinos/: id ', (req, res) => {
     const id = Number(req.params.id);
     const treino = treinos.find((t) => t.id === id);
     if (treino === undefined) {
@@ -98,7 +98,7 @@ app.put('/treinos/:id', (req,res) => {
 // ------------------------------------------------------------
 // DELETE /treinos/:id - remove um treino
 // ------------------------------------------------------------
-app.delete('/treinos/:id', (req, res) => {
+app.delete('/treinos/: id ', (req, res) => {
     const id = Number(req.params.id);
     const posicao = treinos.findIndex((t) => t.id === id);
     if (posicao === -1) {
