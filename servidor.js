@@ -8,18 +8,25 @@
 // O que cada rota deve fazer esta no README.md.
 // ============================================================
 
-const express = require('express');
-const app = express();
-
-// Faz o Express entender JSON no corpo das requisicoes
-app.use(express.json());
-
 // ------------------------------------------------------------
 // Os dados moram aqui, na memoria. Somem quando o servidor cai.
 // (Na Aula 03 isso vira banco de dados.)
 // ------------------------------------------------------------
-const treinos = [];
-let proximoId = 1;
+
+const express = require('express');
+const { DatabaseSync } = require('node:sqlite');
+const app = express();
+app.use(express.json());
+// Conecta ao banco (cria o arquivo treinos.db se nao existir)
+const db = new DatabaseSync('treinos.db');
+// Garante que a tabela existe
+db.exec(`
+CREATE TABLE IF NOT EXISTS treinos (
+id INTEGER PRIMARY KEY AUTOINCREMENT,
+nome TEXT NOT NULL,
+duracao INTEGER NOT NULL
+)
+`);
 
 // ------------------------------------------------------------
 // Validacao
@@ -39,8 +46,9 @@ function validarTreino(corpo) {
 // ------------------------------------------------------------
 // GET /treinos - lista todos os treinos
 // ------------------------------------------------------------
-app.get('/treinos', (req, res) => {
-    res.status(200).json(treinos);
+app.get('/treinos', (req,res) => {
+const treinos = db.prepare('SELECT * FROM treinos').all();
+res.status(200).json(treinos);
 });
 
 
