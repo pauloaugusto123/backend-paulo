@@ -48,24 +48,108 @@ function validarTreino(corpo) {
 // ------------------------------------------------------------
 // GET /treinos - lista todos os treinos
 // ------------------------------------------------------------
+
 app.get('/treinos', (req,res) => {
 const treinos = db.prepare('SELECT * FROM treinos').all();
 res.status(200).json(treinos);
 });
 
 
+app.get('/treinos/resumo', (req, res) => {
+  
+  const resumo = db.prepare(`
+    SELECT 
+      COUNT(*) AS total,
+      IFNULL(SUM(duracao_minutos), 0) AS minutos,
+      IFNULL(AVG(duracao_minutos), 0) AS media
+    FROM treinos
+  `).get();
+
+  res.status(200).json(resumo);
+});
+
+
+app.get('/treinos/:id', (req, res) => {
+  const id = Number(req.params.id);
+  
+  if (isNaN(id)) {
+    return res.status(400).json({ erro: 'ID inválido.' });
+  }
+
+  const treino = db.prepare('SELECT * FROM treinos WHERE id = ?').get(id);
+
+  if (!treino) {
+    return res.status(404).json({ erro: 'Treino não encontrado.' });
+  }
+
+  res.status(200).json(treino);
+});
 // ------------------------------------------------------------
 // GET /treinos/:id - busca um treino pelo id (404 se nao existir)
 // ------------------------------------------------------------
 app.get('/treinos/:id', (req, res) => {
-    const id = Number(req.params.id);
-    const treino = treinos.find((t) => t.id === id);
-    if (treino === undefined) {
-        return res.status(404).json({ erro: 'Treino nao encontrado.' });
-    }
-    res.status(200).json(treino);
+const id = Number(req.params.id);
+const treino = db.prepare('SELECT * FROM treinos WHERE id = ?').get(id);
+if (treino === undefined) {
+return res.status(404).json({ erro: 'Treino nao encontrado.' });
+}
+res.status(200).json(treino);
 });
 
+app.get('/treinos', (req, res) => {
+  const { busca } = req.query;
+
+  if (busca) {
+  
+    const termoBusca = `%${busca}%`;
+    const treinosFiltrados = db.prepare('SELECT * FROM treinos WHERE nome LIKE ?').all(termoBusca);
+    return res.status(200).json(treinosFiltrados);
+  }
+
+
+  const todosTreinos = db.prepare('SELECT * FROM treinos').all();
+  res.status(200).json(todosTreinos);
+});
+
+
+app.get('/treinos/:id', (req, res) => {
+  const id = Number(req.params.id);
+  
+  if (isNaN(id)) {
+    return res.status(400).json({ erro: 'ID inválido.' });
+  }
+
+  const treino = db.prepare('SELECT * FROM treinos WHERE id = ?').get(id);
+
+  if (!treino) {
+    return res.status(404).json({ erro: 'Treino não encontrado.' });
+  }
+
+  res.status(200).json(treino);
+});
+
+// ------------------------------------------------------------
+// GET /treinos/abc responde 404.
+// ------------------------------------------------------------
+app.get('/treinos/:id', (req, res) => {
+  const { id } = req.params;
+
+ 
+  const ehNumeroInteiro = /^\d+$/.test(id);
+
+  if (!ehNumeroInteiro) {
+    return res.status(400).json({ erro: 'O ID informado deve ser um número inteiro válido.' });
+  }
+
+  const idNumerico = Number(id);
+  const treino = db.prepare('SELECT * FROM treinos WHERE id = ?').get(idNumerico);
+
+  if (!treino) {
+    return res.status(404).json({ erro: 'Treino não encontrado.' });
+  }
+
+  res.status(200).json(treino);
+});
 
 // ------------------------------------------------------------
 // POST /treinos - cria um treino (400 se os dados forem invalidos)
