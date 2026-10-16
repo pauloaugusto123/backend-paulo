@@ -42,6 +42,7 @@ o Service não sabe que existe um `req.body`.
 
 Crie `repositories/treinosRepository.js`:
 
+
 ```js
 const db = require('../banco.js');
 
